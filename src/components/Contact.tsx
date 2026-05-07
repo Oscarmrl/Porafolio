@@ -151,7 +151,7 @@ export default function Contact() {
             Envíame un mensaje — te respondo en menos de 24 horas.
           </p>
           <a
-            href="mailto:omurillooseguera@gmail.com"
+            href="mailto:oscaralexandermurillo512@gmail.com"
             style={{
               display: "inline-flex", alignItems: "center", gap: 6,
               fontSize: 15, fontWeight: 600, color: "#111",
@@ -160,7 +160,7 @@ export default function Contact() {
             onMouseEnter={e => (e.currentTarget.style.color = "#555")}
             onMouseLeave={e => (e.currentTarget.style.color = "#111")}
           >
-            omurillooseguera@gmail.com
+            oscaralexandermurillo512@gmail.com
             <svg width="13" height="13" viewBox="0 0 11 11" fill="none">
               <path d="M1.5 5.5h8M5.5 1.5l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
