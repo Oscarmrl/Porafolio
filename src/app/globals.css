@@ -54,3 +54,64 @@ a { text-decoration: none; color: inherit; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #F7F7F7; }
 ::-webkit-scrollbar-thumb { background: #DDD; border-radius: 3px; }
+
+/* ── Responsive movil ──────────────────────────────────────────── */
+@media (max-width: 767px) {
+
+  /* Padding lateral global */
+  main > div { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Navbar */
+  header .h-14 { padding-left: 20px !important; padding-right: 20px !important; }
+
+  /* Footer */
+  footer > div {
+    padding: 16px 20px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* Hero */
+  #home {
+    flex-direction: column !important;
+    padding-top: 36px !important;
+    padding-bottom: 36px !important;
+    gap: 28px !important;
+  }
+  #home > div:first-child {
+    width: 100% !important;
+    max-width: 260px !important;
+    margin: 0 auto !important;
+  }
+  #home > div:last-child { min-width: unset !important; }
+
+  /* About bio */
+  .about-bio {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+    margin-bottom: 32px !important;
+  }
+  .about-bio p:first-child { font-size: 16px !important; }
+
+  /* About fotos */
+  .about-photos {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-bottom: 32px !important;
+  }
+
+  /* Contact grid principal */
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+    padding: 28px 22px 36px !important;
+  }
+  .contact-grid h2 { font-size: 26px !important; }
+
+  /* Contact campos nombre/email */
+  .contact-fields {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}

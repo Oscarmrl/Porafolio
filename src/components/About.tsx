@@ -128,6 +128,7 @@ export default function About() {
 
       {/* Bio — two column layout */}
       <motion.div
+        className="about-bio"
         initial={{ opacity: 0, y: 14 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.55, delay: 0.06, ease: [0.25, 1, 0.5, 1] }}
@@ -153,6 +154,7 @@ export default function About() {
 
       {/* Photos */}
       <motion.div
+        className="about-photos"
         initial={{ opacity: 0, y: 16 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.14, ease: [0.25, 1, 0.5, 1] }}

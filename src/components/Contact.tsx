@@ -121,6 +121,7 @@ export default function Contact() {
         initial={{ opacity: 0, y: 18 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+        className="contact-grid"
         style={{
           background: "#F9F9F9",
           border: "1px solid #EBEBEB",
@@ -168,7 +169,7 @@ export default function Contact() {
 
         {/* Right — form */}
         <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div className="contact-fields" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div>
               <input
                 type="text"
