@@ -15,7 +15,7 @@ export default function Footer() {
           Oscar Murillo
         </span>
         <p style={{ fontSize: 11, color: "#AAAAAA" }}>
-          © {new Date().getFullYear()} · Hecho con Next.js &amp; Framer Motion
+          © {new Date().getFullYear()} · Hecho por Oscar Murillo
         </p>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

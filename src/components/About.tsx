@@ -16,6 +16,7 @@ const stack = [
   "PostgreSQL","OpenAI API","Claude API","Express","Fastify",
   "Bun.js","GraphQL","Prisma","JWT","Tailwind CSS",
   "Docker","Vercel","Railway","n8n","REST APIs","Git","MongoDB","MySQL",
+  "Claude Code","OpenCode",
 ];
 
 const easeExpo: [number, number, number, number] = [0.16, 1, 0.3, 1];
