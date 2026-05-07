@@ -9,7 +9,7 @@ const projects = [
   {
     title: "SaaS — BrandAI",
     category: "SaaS · IA",
-    description: "Plataforma SaaS con generación de contenido de marca impulsada por inteligencia artificial.",
+    description: "Plataforma SaaS que transforma la descripción de un negocio en recursos de marketing profesionales: imágenes, banners y textos publicitarios mediante inteligencia artificial.",
     image: "/saas.png",
     tags: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "Docker", "Supabase", "Redis", "Fastify", "AI"],
     year: "2024",
@@ -19,7 +19,7 @@ const projects = [
   {
     title: "Ecommerce-Tec",
     category: "E-Commerce · Full Stack",
-    description: "Tienda online completa con autenticación JWT, gestión de productos y pasarela de pagos.",
+    description: "Tienda de tecnología de comercio electrónico construida con una pila moderna: Next.js 16, React 19, Tailwind CSS, PostgreSQL, autenticación con Firebase, carrito de compras, diseño responsivo.",
     image: "/ecommerce.png",
     tags: ["Next.js", "Node.js", "PostgreSQL", "JWT"],
     year: "2024",
@@ -29,11 +29,11 @@ const projects = [
   {
     title: "PARADISE",
     category: "Full Stack",
-    description: "Aplicación web con autenticación Firebase, base de datos PostgreSQL y experiencia de usuario fluida.",
+    description: "Plataforma de tienda en línea enfocada en la venta de ropa, diseñada para ofrecer una experiencia de compra sencilla, rápida y accesible. Incluye un sistema de carrito de compras intuitivo que permite a los usuarios seleccionar productos y comunicarse directamente con el proveedor.",
     image: "/paradise.png",
     tags: ["Next.js", "PostgreSQL", "Firebase"],
     year: "2024",
-    demo: "#",
+    demo: "https://paradaise-production.up.railway.app/",
     github: "https://github.com/Oscarmrl/PARADAISE",
   },
 ];
@@ -262,8 +262,11 @@ export default function Projects() {
                     fontSize: 10, fontWeight: 700, color: "#AAAAAA",
                     letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4,
                   }}>{p.category}</p>
-                  <p style={{ fontSize: 16, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 8 }}>
+                  <p style={{ fontSize: 16, fontWeight: 700, color: "#111", lineHeight: 1.25, marginBottom: 6 }}>
                     {p.title}
+                  </p>
+                  <p style={{ fontSize: 12, color: "#666", lineHeight: 1.55, marginBottom: 8 }}>
+                    {p.description}
                   </p>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: "auto" }}>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
