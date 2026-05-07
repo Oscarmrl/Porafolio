@@ -2,37 +2,118 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { contactSchema } from "@/lib/contact-schema";
+import type { ZodFormattedError } from "zod";
+
+type FormFields = { name: string; email: string; message: string };
+type FieldErrors = ZodFormattedError<FormFields>;
 
 export default function Contact() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+
+  const [form, setForm] = useState<FormFields>({ name: "", email: "", message: "" });
   const [focused, setFocused] = useState<string | null>(null);
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [touched, setTouched] = useState<Partial<Record<keyof FormFields, boolean>>>({});
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors | null>(null);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  // Validate a single field on blur
+  const handleBlur = (field: keyof FormFields) => {
+    setFocused(null);
+    setTouched(t => ({ ...t, [field]: true }));
+    const result = contactSchema.safeParse(form);
+    if (!result.success) {
+      setFieldErrors(result.error.format() as FieldErrors);
+    } else {
+      setFieldErrors(null);
+    }
+  };
+
+  const handleChange = (field: keyof FormFields, value: string) => {
+    const updated = { ...form, [field]: value };
+    setForm(updated);
+    // Clear error for this field as user types
+    if (touched[field]) {
+      const result = contactSchema.safeParse(updated);
+      if (!result.success) {
+        setFieldErrors(result.error.format() as FieldErrors);
+      } else {
+        setFieldErrors(null);
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Full client-side validation before sending
+    const result = contactSchema.safeParse(form);
+    if (!result.success) {
+      setFieldErrors(result.error.format() as FieldErrors);
+      setTouched({ name: true, email: true, message: true });
+      return;
+    }
+
     setStatus("sending");
-    await new Promise(r => setTimeout(r, 1100));
-    setStatus("sent");
-    setTimeout(() => setStatus("idle"), 3500);
-    setForm({ name: "", email: "", message: "" });
+    setFieldErrors(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(result.data),
+      });
+
+      if (!res.ok) throw new Error("Error");
+
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "" });
+      setTouched({});
+      setTimeout(() => setStatus("idle"), 3500);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3500);
+    }
   };
 
-  const inputStyle = (field: string): React.CSSProperties => ({
-    width: "100%",
-    fontSize: 15,
-    fontFamily: "inherit",
-    color: "#111",
-    background: "white",
-    border: `1px solid ${focused === field ? "#111" : "#E5E5E5"}`,
-    borderRadius: 12,
-    padding: "14px 18px",
-    outline: "none",
-    boxShadow: focused === field ? "0 0 0 3px rgba(17,17,17,0.06)" : "none",
-    transition: "border-color 0.15s, box-shadow 0.15s",
-    resize: "none" as const,
-  });
+  const inputStyle = (field: keyof FormFields): React.CSSProperties => {
+    const hasError = touched[field] && fieldErrors?.[field]?._errors?.length;
+    return {
+      width: "100%",
+      fontSize: 15,
+      fontFamily: "inherit",
+      color: "#111",
+      background: "white",
+      border: `1px solid ${hasError ? "#DC2626" : focused === field ? "#111" : "#E5E5E5"}`,
+      borderRadius: 12,
+      padding: "14px 18px",
+      outline: "none",
+      boxShadow: hasError
+        ? "0 0 0 3px rgba(220,38,38,0.08)"
+        : focused === field
+        ? "0 0 0 3px rgba(17,17,17,0.06)"
+        : "none",
+      transition: "border-color 0.15s, box-shadow 0.15s",
+      resize: "none" as const,
+    };
+  };
+
+  const errorMsg = (field: keyof FormFields) => {
+    const msg = fieldErrors?.[field]?._errors?.[0];
+    if (!touched[field] || !msg) return null;
+    return (
+      <motion.p
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -4 }}
+        transition={{ duration: 0.18 }}
+        style={{ fontSize: 12, color: "#DC2626", marginTop: 5, paddingLeft: 4 }}
+      >
+        {msg}
+      </motion.p>
+    );
+  };
 
   return (
     <section id="contact" ref={ref} style={{ marginBottom: 80 }}>
@@ -51,7 +132,7 @@ export default function Contact() {
           alignItems: "start",
         }}
       >
-        {/* Left — header */}
+        {/* Left */}
         <div>
           <p style={{
             fontSize: 12, fontWeight: 700, color: "#AAAAAA",
@@ -86,40 +167,62 @@ export default function Contact() {
         </div>
 
         {/* Right — form */}
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <form onSubmit={handleSubmit} noValidate style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-            <input
-              type="text" placeholder="Tu nombre" required
-              value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-              onFocus={() => setFocused("name")} onBlur={() => setFocused(null)}
-              style={inputStyle("name")}
-            />
-            <input
-              type="email" placeholder="tu@correo.com" required
-              value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-              onFocus={() => setFocused("email")} onBlur={() => setFocused(null)}
-              style={inputStyle("email")}
-            />
+            <div>
+              <input
+                type="text"
+                placeholder="Tu nombre"
+                value={form.name}
+                onChange={e => handleChange("name", e.target.value)}
+                onFocus={() => setFocused("name")}
+                onBlur={() => handleBlur("name")}
+                style={inputStyle("name")}
+              />
+              <AnimatePresence>{errorMsg("name")}</AnimatePresence>
+            </div>
+            <div>
+              <input
+                type="email"
+                placeholder="tu@correo.com"
+                value={form.email}
+                onChange={e => handleChange("email", e.target.value)}
+                onFocus={() => setFocused("email")}
+                onBlur={() => handleBlur("email")}
+                style={inputStyle("email")}
+              />
+              <AnimatePresence>{errorMsg("email")}</AnimatePresence>
+            </div>
           </div>
-          <textarea
-            placeholder="Cuéntame sobre tu proyecto..." required rows={5}
-            value={form.message} onChange={e => setForm({ ...form, message: e.target.value })}
-            onFocus={() => setFocused("message")} onBlur={() => setFocused(null)}
-            style={{ ...inputStyle("message"), resize: "none" }}
-          />
+
+          <div>
+            <textarea
+              placeholder="Cuéntame sobre tu proyecto..."
+              rows={5}
+              value={form.message}
+              onChange={e => handleChange("message", e.target.value)}
+              onFocus={() => setFocused("message")}
+              onBlur={() => handleBlur("message")}
+              style={{ ...inputStyle("message"), resize: "none" }}
+            />
+            <AnimatePresence>{errorMsg("message")}</AnimatePresence>
+          </div>
+
           <button
-            type="submit" disabled={status !== "idle"}
+            type="submit"
+            disabled={status === "sending"}
             style={{
-              background: "#111", color: "white",
+              background: status === "error" ? "#DC2626" : "#111",
+              color: "white",
               fontSize: 15, fontWeight: 700, fontFamily: "inherit",
               padding: "14px 0", borderRadius: 12,
-              border: "none", cursor: "pointer",
-              opacity: status !== "idle" ? 0.7 : 1,
+              border: "none", cursor: status === "sending" ? "not-allowed" : "pointer",
+              opacity: status === "sending" ? 0.7 : 1,
               transition: "background 0.2s, opacity 0.2s",
               overflow: "hidden",
             }}
             onMouseEnter={e => status === "idle" && (e.currentTarget.style.background = "#333")}
-            onMouseLeave={e => (e.currentTarget.style.background = "#111")}
+            onMouseLeave={e => (e.currentTarget.style.background = status === "error" ? "#DC2626" : "#111")}
           >
             <AnimatePresence mode="wait">
               {status === "idle" && (
@@ -151,6 +254,15 @@ export default function Contact() {
                     <path d="M2 7l3.5 3.5L12 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   ¡Mensaje enviado!
+                </motion.span>
+              )}
+              {status === "error" && (
+                <motion.span key="e" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}>
+                  <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                    <path d="M7 2v6M7 10v1.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  Error, inténtalo de nuevo
                 </motion.span>
               )}
             </AnimatePresence>
