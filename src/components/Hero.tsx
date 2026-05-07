@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -46,6 +46,12 @@ const titleWords = ["Hola,", "soy", "Oscar", "Murillo."];
 
 export default function Hero() {
   const [hovered, setHovered] = useState(false);
+  const [showHint, setShowHint] = useState(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShowHint(false), 10000);
+    return () => clearTimeout(t);
+  }, []);
 
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -114,6 +120,40 @@ export default function Hero() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Hint */}
+        <AnimatePresence>
+          {showHint && !hovered && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 4 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                position: "absolute",
+                bottom: -28,
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                background: "rgba(255,255,255,0.85)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid #EBEBEB",
+                borderRadius: 999,
+                padding: "4px 12px",
+                whiteSpace: "nowrap",
+                pointerEvents: "none",
+              }}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+              </svg>
+              <span style={{ fontSize: 11, color: "#888", fontWeight: 500 }}>Pasa el cursor sobre la imagen</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Social icon buttons */}
         <AnimatePresence>
@@ -311,6 +351,50 @@ export default function Hero() {
             />
             Disponible para proyectos
           </button>
+
+          <a
+            href="/CV_OscarMurillo_2026.pdf"
+            download
+            style={{
+              background: "white",
+              color: "#111",
+              fontSize: 15,
+              fontWeight: 500,
+              padding: "13px 28px",
+              borderRadius: 999,
+              border: "1px solid #E0E0E0",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              textDecoration: "none",
+              transition: "border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s",
+              fontFamily: "inherit",
+            }}
+            onMouseEnter={e => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = "#111";
+              el.style.color = "#fff";
+              el.style.borderColor = "#111";
+              el.style.transform = "translateY(-2px)";
+              el.style.boxShadow = "0 6px 20px rgba(0,0,0,0.18)";
+            }}
+            onMouseLeave={e => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = "white";
+              el.style.color = "#111";
+              el.style.borderColor = "#E0E0E0";
+              el.style.transform = "translateY(0)";
+              el.style.boxShadow = "none";
+            }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Descargar CV
+          </a>
         </motion.div>
       </div>
 

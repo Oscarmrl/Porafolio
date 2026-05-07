@@ -6,18 +6,9 @@ import { motion, useInView } from "framer-motion";
 import gsap from "gsap";
 
 const photos = [
-  {
-    src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&h=600&fit=crop&auto=format&q=80",
-    rotate: "-3deg",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600&h=600&fit=crop&auto=format&q=80",
-    rotate: "2.5deg",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=900&h=600&fit=crop&auto=format&q=80",
-    rotate: "-1.5deg",
-  },
+  { src: "/about1.jpeg", rotate: "-3deg" },
+  { src: "/about3.jpeg", rotate: "2.5deg" },
+  { src: "/about2.jpeg", rotate: "-1.5deg" },
 ];
 
 const stack = [
